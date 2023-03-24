@@ -5,22 +5,21 @@
 using namespace std;
 // input
 map<char, float> chart = {
-    {'a', 0.1},
-    {'b', 0.2},
-    {'c',0.25},
-    {'d',0.25},
-    {'e',0.05},
-    {'f',0.15}
+    {'a', 0.11},
+    {'b', 0.05},
+    {'c', 0.1},
+    {'d', 0.7},
+    {'e', 0.04}
 };
 
 class node{
     //float key; // probability
-    int code;
     public:
         node *left;
         node *right;
         char symbol;
         float key;
+        string code = "";
         node(char s, float k){
             symbol = s;
             key = k;
@@ -60,11 +59,19 @@ void combine(node *min1, node * min2, map<node *,int> &forest){
     root = new_node;
 }
 void printHuffmanTree(node *root){
-    if(root){
+    if(root ){
         if(!root->left && !root->right)
             cout << root->symbol << ' ';
         printHuffmanTree(root->left);
         printHuffmanTree(root->right);
+    }
+}
+void printHuffmanCode(node *root){
+    if(root){
+        if(!root->left && !root->right)
+            cout << root->symbol << " ==> " << root->code << ' ' << endl;
+        printHuffmanCode(root->left);
+        printHuffmanCode(root->right);
     }
 }
 void constructHuffmanTree(){
@@ -79,12 +86,23 @@ void constructHuffmanTree(){
         combine(min1, min2, forest);
     }
 }
+void assigne (node *r, string c){
+    if(r){
+        r->code += c;
+        assigne(r->left, r->code + "0");
+        assigne(r->right, r->code + "1");  
+    }
+}
 int main(){
     init();
     printForest(forest);
     cout << "----------------------------" << endl;
     constructHuffmanTree();
+    assigne(root,"");
     printHuffmanTree(root);
+    cout << endl;
+    cout << "----------------------------" << endl;
+    printHuffmanCode(root);
     cout << endl;
     return 0;
 }
